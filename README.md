@@ -1,7 +1,7 @@
-# srixen_discordlog
+# srixen_discordlog 
 Fivem server logging for basic and default events
 
-## Setting up config.lua
+### Setting up config.lua
 
 Config.steamApiKey = "" Steam API Key is required to log chat messages with the players steam profile picture and name. You can get yours on: https://steamcommunity.com/dev/apikey
 
