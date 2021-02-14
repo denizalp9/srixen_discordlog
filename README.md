@@ -9,6 +9,6 @@ Config.webhookName = "YourWebhookNameHere" Your webhook name is the name of the 
 
 Config.webhookLogo = "https://img.icons8.com/color/452/fivem.png" Your webhook logo is the profile picture of the discord logger
 
-Config.useMultipleChannels = true Set to true if you want to use different text channel for each event.
+Config.useMultipleChannels = true Set to true if you want to use different text channel for each event
 
-Config.webhookUrl = "" This url will be used if useMultipleChannels is set to false.
+Config.webhookUrl = "" This url will be used if useMultipleChannels is set to false
