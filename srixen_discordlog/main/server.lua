@@ -56,12 +56,40 @@ AddEventHandler('playerDropped', function(reason)
     sendEmbed("Server Logout", "**" .. GetPlayerName(source) .. "** has left the server. \n Reason: ".. reason, color, Config.webhook.connections)
 end)
 
+local doOk = true
+
 AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then
         sendEmbed('Resource Start','The resource **' .. resourceName .. '** has been started.', 10181046, Config.webhook.resources)
     else
         if not Config.useMultipleChannels then
-            
+            if Config.webhookUrl == '' or Config.webhookUrl == nil then
+                print('\n[WARNING] srixen_discordlog: You are using single-channeled logging and the Config.webhookUrl is empty. Please be aware that the logger wont work unless there is a webhook registered to config.lua.\n')
+                doOk = false
+            end
+            if doOk then
+                print('\n[INFO] srixen_discordlog: Everything is up and running !\n')
+            end   
+        else
+            if Config.webhook.chatMessage == '' or Config.webhook.chatMessage == nil then
+                print('\n[WARNING] srixen_discordlog: You are using multi-channeled logging and the Config.webhook.chatMessage is empty. Please be aware that the chat logger wont work unless there is a webhook registered to config.lua.\n')
+                doOk = false
+            end
+            if Config.webhook.connections == '' or Config.webhook.connections == nil then
+                print('\n[WARNING] srixen_discordlog: You are using multi-channeled logging and the Config.webhook.connections is empty. Please be aware that the connection logger wont work unless there is a webhook registered to config.lua.\n')
+                doOk = false
+            end
+            if Config.webhook.deathlog == '' or Config.webhook.deathlog == nil then
+                print('\n[WARNING] srixen_discordlog: You are using multi-channeled logging and the Config.webhook.deathlog is empty. Please be aware that the death logger wont work unless there is a webhook registered to config.lua.\n')
+                doOk = false
+            end
+            if Config.webhook.resources == '' or Config.webhook.resources == nil then
+                print('\n[WARNING] srixen_discordlog: You are using multi-channeled logging and the Config.webhook.resources is empty. Please be aware that the resource logger wont work unless there is a webhook registered to config.lua.\n')
+                doOk = false
+            end
+            if doOk then
+                print('\n[INFO] srixen_discordlog: Everything is up and running !\n')
+            end
         end
     end
 end)
@@ -77,21 +105,24 @@ end)
 -- Chat 
 
 AddEventHandler('chatMessage', function(source, name, message) 
-
-	if string.match(message, "@everyone") then
-		message = message:gsub("@everyone", "`@everyone`")
-	end
-	if string.match(message, "@here") then
-		message = message:gsub("@here", "`@here`")
-	end
-	if Config.steamApiKey == '' or Config.steamApiKey == nil then
-		PerformHttpRequest(Config.webhook.chatMessage, function(err, text, headers) end, 'POST', json.encode({username = name .. " [" .. source .. "]", content = message, tts = false}), { ['Content-Type'] = 'application/json' })
-	else
-		PerformHttpRequest('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .. Config.steamApiKey .. '&steamids=' .. tonumber(GetIDFromSource('steam', source), 16), function(err, text, headers)
-			local image = string.match(text, '"avatarfull":"(.-)","')
-			PerformHttpRequest(Config.webhook.chatMessage, function(err, text, headers) end, 'POST', json.encode({username = name .. " [" .. source .. "]", content = message, avatar_url = image, tts = false}), { ['Content-Type'] = 'application/json' })
-		end)
-	end
+    if message:sub(1, 1) == '/' then
+        sendEmbed('Player tried to execute a command', 'Player: **' .. GetPlayerName(source) .. '** ran the command: ' .. message , 10181046, Config.webhook.chatMessage)
+    else
+        if string.match(message, "@everyone") then
+            message = message:gsub("@everyone", "`@everyone`")
+        end
+        if string.match(message, "@here") then
+            message = message:gsub("@here", "`@here`")
+        end
+        if Config.steamApiKey == '' or Config.steamApiKey == nil then
+            PerformHttpRequest(Config.webhook.chatMessage, function(err, text, headers) end, 'POST', json.encode({username = name .. " [" .. source .. "]", content = message, tts = false}), { ['Content-Type'] = 'application/json' })
+        else
+            PerformHttpRequest('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' .. Config.steamApiKey .. '&steamids=' .. tonumber(GetIDFromSource('steam', source), 16), function(err, text, headers)
+                local image = string.match(text, '"avatarfull":"(.-)","')
+                PerformHttpRequest(Config.webhook.chatMessage, function(err, text, headers) end, 'POST', json.encode({username = name .. " [" .. source .. "]", content = message, avatar_url = image, tts = false}), { ['Content-Type'] = 'application/json' })
+            end)
+        end
+    end
 end)
 
 -- Player Death Event
