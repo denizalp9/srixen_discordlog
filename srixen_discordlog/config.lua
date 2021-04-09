@@ -6,8 +6,6 @@ Config.webhookName = "YourWebhookNameHere"
 Config.webhookLogo = "https://cdn.discordapp.com/avatars/397804198483460107/00178a8ac33d06fc1e91c5e111835a9e.png?size=256"
 Config.useMultipleChannels = true   -- set to "true" if you want to use a text channel for each event, set to "false" if you dont.
 
-Config.printDeathCauses = true -- setting this to "true" may reduce script performance, set to "false" if you dont want to print death causes.
-
 -- If useMultipleChannels is set to false, the variable below will be the default text channel
 Config.webhookUrl = ""
 
